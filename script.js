@@ -10,7 +10,7 @@ const W = canvas.width;
 const H = canvas.height;
 
 const COLORS = {
-  ink: "#171717",
+  ink: "#000000",
   red: "#b82b2b",
   gold: "#f0a625",
   white: "#ffffff"
@@ -40,11 +40,21 @@ function fitCover(img, zoomFactor = 1) {
   };
 }
 
-function strokeAndFillText(text, x, y, font, fill, stroke = "#000", lineWidth = 10, align = "left") {
+function strokeAndFillText(
+  text,
+  x,
+  y,
+  font,
+  fill,
+  stroke = "#000000",
+  lineWidth = 10,
+  align = "left"
+) {
   ctx.save();
   ctx.font = font;
   ctx.textAlign = align;
   ctx.lineJoin = "round";
+  ctx.miterLimit = 2;
   ctx.lineWidth = lineWidth;
   ctx.strokeStyle = stroke;
   ctx.fillStyle = fill;
@@ -54,10 +64,13 @@ function strokeAndFillText(text, x, y, font, fill, stroke = "#000", lineWidth = 
 }
 
 function drawOverlay() {
-  // Topo: só texto, sem faixa de fundo
+  // =========================
+  // TOPO
+  // =========================
   strokeAndFillText(
     "SOU ESTUDANTE",
-    62, 175,
+    62,
+    175,
     '700 122px "Anton", Impact, sans-serif',
     COLORS.gold,
     COLORS.ink,
@@ -66,14 +79,15 @@ function drawOverlay() {
 
   strokeAndFillText(
     "E TÔ COM A DANY!",
-    62, 300,
+    62,
+    300,
     '700 104px "Anton", Impact, sans-serif',
     COLORS.white,
     COLORS.red,
     18
   );
 
-  // Elementos decorativos
+  // Linha decorativa
   ctx.save();
   ctx.strokeStyle = COLORS.red;
   ctx.lineWidth = 10;
@@ -83,44 +97,52 @@ function drawOverlay() {
   ctx.stroke();
   ctx.restore();
 
-  // Rodapé: novamente, somente tipografia/elementos
+  // =========================
+  // RODAPÉ
+  // =========================
   const baseY = 1570;
 
+  // Nome
   strokeAndFillText(
     "DANY OLIVEIRA",
-    60, baseY,
+    60,
+    baseY,
     '700 108px "Anton", Impact, sans-serif',
     COLORS.white,
     COLORS.ink,
     18
   );
 
+  // Cargo: amarelo com contorno preto
   strokeAndFillText(
     "DEPUTADA FEDERAL",
-    62, baseY + 92,
+    62,
+    baseY + 92,
     '700 54px "Oswald", Arial, sans-serif',
-    COLORS.white,
+    COLORS.gold,
     COLORS.ink,
     12
   );
 
-  // UP
+  // UP: branco com contorno preto
   strokeAndFillText(
     "UP",
-    62, baseY + 235,
+    62,
+    baseY + 235,
     '700 92px "Anton", Impact, sans-serif',
-    COLORS.gold,
+    COLORS.white,
     COLORS.ink,
     14
   );
 
-  // 8080
+  // 8080: preto com contorno branco
   strokeAndFillText(
     "8080",
-    W - 58, baseY + 250,
+    W - 58,
+    baseY + 250,
     '700 190px "Anton", Impact, sans-serif',
-    COLORS.gold,
-    COLORS.red,
+    COLORS.ink,
+    COLORS.white,
     16,
     "right"
   );
@@ -130,7 +152,7 @@ function drawPlaceholder() {
   ctx.clearRect(0, 0, W, H);
 
   ctx.save();
-  ctx.globalAlpha = .85;
+  ctx.globalAlpha = 0.85;
   ctx.fillStyle = "#ffffff";
   ctx.font = '700 58px "Oswald", Arial, sans-serif';
   ctx.textAlign = "center";
@@ -151,14 +173,14 @@ function desenhar() {
   const p = fitCover(foto, zoom);
   ctx.drawImage(foto, p.x, p.y, p.w, p.h);
 
-  // Um leve degradê transparente apenas para legibilidade.
-  // Não cria fundo: a foto continua visível integralmente.
+  // degradê leve no topo para legibilidade
   const topShade = ctx.createLinearGradient(0, 0, 0, 430);
   topShade.addColorStop(0, "rgba(0,0,0,.22)");
   topShade.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = topShade;
   ctx.fillRect(0, 0, W, 430);
 
+  // degradê leve embaixo para legibilidade
   const bottomShade = ctx.createLinearGradient(0, H - 520, 0, H);
   bottomShade.addColorStop(0, "rgba(0,0,0,0)");
   bottomShade.addColorStop(1, "rgba(0,0,0,.35)");
